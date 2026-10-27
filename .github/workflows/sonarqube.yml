@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   sonar:
-    name: Scan with SonarQube
+    name: Test and Scan with SonarQube
     runs-on: ubuntu-latest
 
     steps:
@@ -17,6 +17,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run bug test
+        run: npm run sonar-bug-test
 
       - name: Run SonarQube scan
         uses: SonarSource/sonarqube-scan-action@v6
