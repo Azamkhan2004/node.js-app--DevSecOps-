@@ -1,4 +1,5 @@
-name: SonarQube Scan
+
+name: SonarQube and Trivy Scan
 
 on:
   workflow_dispatch:
@@ -7,8 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  sonar:
-    name: Scan with SonarQube
+  security-scan:
+    name: SonarQube and Trivy Security Scan
     runs-on: ubuntu-latest
 
     steps:
@@ -29,3 +30,17 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.exclusions=node_modules/**,**/.git/**,kubectl
             -Dsonar.javascript.node.maxspace=1024
+
+      - name: Build Docker image
+        run: docker build -t node-js-app:${{ github.sha }} .
+
+      - name: Trivy Docker Image Scan
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: image
+          image-ref: node-js-app:${{ github.sha }}
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          format: table
+          exit-code: '0'
