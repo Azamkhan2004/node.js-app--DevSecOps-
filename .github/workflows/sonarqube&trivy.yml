@@ -35,7 +35,7 @@ jobs:
         run: docker build -t node-js-app:${{ github.sha }} .
 
       - name: Trivy Docker Image Scan
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
           image-ref: node-js-app:${{ github.sha }}
