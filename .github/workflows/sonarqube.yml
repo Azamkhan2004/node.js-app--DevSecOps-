@@ -1,0 +1,35 @@
+
+name: SonarQube Scan
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sonarcloud:
+    name: Scan with SonarQube
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SonarQube scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=node-js-app
+            -Dsonar.projectName="Node.js App"
+            -Dsonar.sources=.
+            -Dsonar.exclusions=node_modules/**,**/.git/**,kubectl
+            -Dsonar.javascript.node.maxspace=1024
