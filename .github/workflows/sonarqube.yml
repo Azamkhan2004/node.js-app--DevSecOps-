@@ -2,16 +2,13 @@
 name: SonarQube Scan
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  sonarcloud:
+  sonar:
     name: Scan with SonarQube
     runs-on: ubuntu-latest
 
